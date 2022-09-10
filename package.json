@@ -1,26 +1,66 @@
 {
-  "name": "vscode-we-test-explorer",
+	"name": "vscode-we-test-explorer",
 	"displayName": "vscode-we-test-explorer",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
-		"vscode": "^1.71.0"
+		"vscode": "^1.70.0"
 	},
+	"extensionKind": [
+		"ui",
+		"workspace"
+	],
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:vscode-we-test-explorer.helloWorld"
+		"onView:vscode-we-test-explorer.colorsView",
+		"onCommand:vscode-we-test-explorer.helloWorld",
+		"onCommand:vscode-we-test-explorer.addColor",
+		"onCommand:vscode-we-test-explorer.clearColors"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"views": {
+			"test": [
+				{
+					"type": "webview",
+					"id": "vscode-we-test-explorer.colorsView",
+					"name": "We Test Explorer"
+				}
+			]
+		},
 		"commands": [
 			{
 				"command": "vscode-we-test-explorer.helloWorld",
 				"title": "Hello World"
+			},
+			{
+				"command": "vscode-we-test-explorer.addColor",
+				"category": "Calico Colors",
+				"title": "Add Color"
+			},
+			{
+				"command": "vscode-we-test-explorer.clearColors",
+				"category": "Calico Colors",
+				"title": "Clear Colors",
+				"icon": "$(clear-all)"
 			}
-		]
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "vscode-we-test-explorer.clearColors",
+					"group": "navigation",
+					"when": "view == vscode-we-test-explorer.colorsView"
+				}
+			]
+		}
 	},
+	"extensionDependencies": [
+    "ms-python.python",
+    "hbenl.vscode-test-explorer"
+  ],
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
 		"compile": "tsc -p ./",
@@ -29,17 +69,20 @@
 		"lint": "eslint src --ext ts",
 		"test": "node ./out/test/runTest.js"
 	},
+	"dependencies": {
+		"vscode-test-adapter-api": "^1.9.0"
+	},
 	"devDependencies": {
-		"@types/vscode": "^1.71.0",
 		"@types/glob": "^7.1.4",
 		"@types/mocha": "^9.0.0",
 		"@types/node": "14.x",
+		"@types/vscode": "^1.71.0",
 		"@typescript-eslint/eslint-plugin": "^5.1.0",
 		"@typescript-eslint/parser": "^5.1.0",
+		"@vscode/test-electron": "^1.6.2",
 		"eslint": "^8.1.0",
 		"glob": "^7.1.7",
 		"mocha": "^9.1.3",
-		"typescript": "^4.4.4",
-		"@vscode/test-electron": "^1.6.2"
+		"typescript": "^4.4.4"
 	}
 }
