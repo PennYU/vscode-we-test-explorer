@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { TestController, TestAdapter, TestSuiteInfo, TestInfo } from 'vscode-test-adapter-api';
 
 export class WeTreeViewProvider implements vscode.WebviewViewProvider {
 
@@ -37,6 +38,14 @@ export class WeTreeViewProvider implements vscode.WebviewViewProvider {
 					}
 			}
 		});
+	}
+	public showTestSuite(testSuiteInfo: TestSuiteInfo) {
+		if (this._view) {
+			this._view.webview.postMessage({
+				type: 'showSuite',
+				suite: testSuiteInfo,
+			});
+		}
 	}
 
 	public addColor() {
@@ -84,6 +93,9 @@ export class WeTreeViewProvider implements vscode.WebviewViewProvider {
 				<title>Cat Colors</title>
 			</head>
 			<body>
+				<ul class="suite-list">
+				</ul>
+
 				<ul class="color-list">
 				</ul>
 

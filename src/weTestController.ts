@@ -35,15 +35,7 @@ export class WeTestController implements TestController {
 				const testCount = rootSuite ? countTests(rootSuite) : 0;
 				this.statusBarItem.text = `Loaded ${testCount} tests`;
 				if (rootSuite) {
-					rootSuite.children.forEach(suite => {
-						const child = suite as TestSuiteInfo;
-						this.weTreeViewProvider.addColor();
-						if (child && child.children) {
-							child.children.forEach(() => {
-								this.weTreeViewProvider.addColor();
-							});
-						}
-					});
+					this.weTreeViewProvider.showTestSuite(rootSuite);
 				}
 			}
 		}));

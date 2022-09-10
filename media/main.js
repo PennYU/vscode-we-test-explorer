@@ -5,12 +5,18 @@
 (function () {
     const vscode = acquireVsCodeApi();
 
-    const oldState = vscode.getState() || { colors: [] };
+    const oldState = vscode.getState() || { colors: [], suite: {} };
 
     /** @type {Array<{ value: string }>} */
+    const suite = oldState.suite;
     let colors = oldState.colors;
 
-    updateColorList(colors);
+    if (suite) {
+        showRootSuite(suite);
+    }
+    if (colors) {
+        updateColorList(colors);
+    }
 
     document.querySelector('.add-color-button').addEventListener('click', () => {
         addColor();
@@ -22,28 +28,78 @@
         switch (message.type) {
             case 'addColor':
                 {
+                    console.log("333331");
                     addColor();
                     break;
                 }
             case 'clearColors':
                 {
+                    console.log("333332");
                     colors = [];
                     updateColorList(colors);
+                    break;
+                }
+            case 'showSuite':
+                {
+                    console.log("333333");
+                    console.log(JSON.stringify(message));
+                    if (message.suite) {
+                       showRootSuite(message.suite);
+                    }
                     break;
                 }
 
         }
     });
 
+    function showRootSuite(suite) {
+        const ul = document.querySelector('.suite-list');
+        if (ul) {
+            ul.textContent = '';
+            ul.className = 'tree';
+            showTestSuite(ul, suite);
+        }
+        vscode.setState({ suite: suite });
+    }
+
+    function showTestSuite(ul, suite) {
+        for (const info of suite.children) {
+            console.log(info.label);
+            const li = document.createElement('li');
+            li.className = 'color-entry';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            li.appendChild(checkbox);
+
+            const label = document.createElement('label');
+            label.innerText = info.label;
+            li.appendChild(label);
+
+            if (info.children) {
+                const nestedUl = document.createElement('ul');
+                showTestSuite(nestedUl, info);
+                li.appendChild(nestedUl);
+            }
+
+            ul.appendChild(li);
+        }
+    }
+
     /**
      * @param {Array<{ value: string }>} colors
      */
     function updateColorList(colors) {
+        console.log("4");
         const ul = document.querySelector('.color-list');
         ul.textContent = '';
         for (const color of colors) {
             const li = document.createElement('li');
             li.className = 'color-entry';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            li.appendChild(checkbox);
 
             const colorPreview = document.createElement('div');
             colorPreview.className = 'color-preview';
