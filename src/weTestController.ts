@@ -22,6 +22,7 @@ export class WeTestController implements TestController {
 		
 		const adapterDisposables: { dispose(): void }[] = [];
 		this.disposables.set(adapter, adapterDisposables);
+		this.weTreeViewProvider.adapter = adapter;
 
 		adapterDisposables.push(adapter.tests(testLoadEvent => {
 

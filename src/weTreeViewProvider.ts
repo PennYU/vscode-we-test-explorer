@@ -1,11 +1,16 @@
 import * as vscode from 'vscode';
 import { TestController, TestAdapter, TestSuiteInfo, TestInfo } from 'vscode-test-adapter-api';
+import { WeTestController } from './weTestController';
 
 export class WeTreeViewProvider implements vscode.WebviewViewProvider {
 
 	public static readonly viewType = 'vscode-we-test-explorer.colorsView';
 
 	private _view?: vscode.WebviewView;
+	private _adapter: TestAdapter | undefined;
+	public set adapter(ctrl: TestAdapter) {
+		this._adapter = ctrl; 
+	}
 
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
@@ -31,6 +36,21 @@ export class WeTreeViewProvider implements vscode.WebviewViewProvider {
 
 		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
+				case 'run':
+					{
+						const suite: TestSuiteInfo = data.value;
+						vscode.window.showInformationMessage("run a test." + JSON.stringify(suite));
+						if (suite.file) {
+							const uri = vscode.Uri.file(suite.file).toString();
+							vscode.commands.executeCommand('test-explorer.run-file', uri);
+						}
+						break;
+					}
+				case 'suiteSelected':
+					{
+						vscode.window.showInformationMessage("suite selected");
+						break;
+					}
 				case 'colorSelected':
 					{
 						vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));

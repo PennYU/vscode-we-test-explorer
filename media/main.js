@@ -28,21 +28,17 @@
         switch (message.type) {
             case 'addColor':
                 {
-                    console.log("333331");
                     addColor();
                     break;
                 }
             case 'clearColors':
                 {
-                    console.log("333332");
                     colors = [];
                     updateColorList(colors);
                     break;
                 }
             case 'showSuite':
                 {
-                    console.log("333333");
-                    console.log(JSON.stringify(message));
                     if (message.suite) {
                        showRootSuite(message.suite);
                     }
@@ -70,11 +66,22 @@
 
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
+            checkbox.addEventListener('change', (e) => {
+                const value = e.target.value;
+                onSuiteSelected(info);
+            });
             li.appendChild(checkbox);
 
             const label = document.createElement('label');
             label.innerText = info.label;
             li.appendChild(label);
+
+            const button = document.createElement('button');
+            button.className = 'btn';
+            button.addEventListener('click', (e) => {
+                onRunSuite(info);
+            });
+            li.appendChild(button);
 
             if (info.children) {
                 const nestedUl = document.createElement('ul');
@@ -137,6 +144,14 @@
      */
     function onColorClicked(color) {
         vscode.postMessage({ type: 'colorSelected', value: color });
+    }
+
+    function onRunSuite(suite) {
+        vscode.postMessage({ type: 'run', value: suite });
+    }
+
+    function onSuiteSelected(suite) {
+        vscode.postMessage({ type: 'suiteSelected', value: suite });
     }
 
     /**
